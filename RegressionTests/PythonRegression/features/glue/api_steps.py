@@ -6,29 +6,31 @@ Created on Jun 26, 2018
 # -*- coding: utf-8 -*-
 
 
-from lettuce import step
-from util import api_bridge
-
-# Define generic API Bridge
-host = "https://localhost"
-port = 14265
-api = api_bridge.API(host,port)
+from aloe import step,world
+from iota import Iota
 
 
-@step('Given The host is https://node.iotanode.host')
-def the_host_is_https_node_iotanode_host(step):
-    api.setHost("https://node.iotanode.host")
+
+@step(r'The host is "([^"]*)"')
+def the_host_is(step,host):
+    world.host = host
     # assert True, "Set Host Failed"
 
-@step('And The port is 443')
-def the_port_is(step):
-    api.setPort(443)
+@step(r'The port is (\d+)')
+def the_port_is(step,port):
+    world.port = port
     # assert True, "Set Port Failed"
         
-@step('Then GetNodeInfo will return type dict')
+@step(r'GetNodeInfo will return type dict')
 def getnodeinfo_returns_dict(step):
-    info = api.getNodeInfo();
-    assert type(info) is dict
+    address = world.host + ":" + str(world.port)
+    api = Iota(address)
+    try:
+        info = api.get_node_info();
+    except:
+        info = "Error: getNodeInfo did not succeed"
+    
+    assert type(info) is dict, "GetNodeInfo returned %r which means it did not succeed" % type(info)
     
     
     

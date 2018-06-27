@@ -4,6 +4,6 @@ Feature: Test GetNodeInfo API call
 	and the response needs to be checked.
 	
 	Scenario: GetNodeInfo from non-local host
-		Given The host is https://node.iotanode.host
+		Given The host is "https://node.iotanode.host"
 		And The port is 443 
 		Then GetNodeInfo will return type dict
