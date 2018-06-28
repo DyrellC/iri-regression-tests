@@ -14,12 +14,10 @@ from iota import Iota
 @step(r'The host is "([^"]*)"')
 def the_host_is(step,host):
     world.host = host
-    # assert True, "Set Host Failed"
 
 @step(r'The port is (\d+)')
 def the_port_is(step,port):
     world.port = port
-    # assert True, "Set Port Failed"
         
 @step(r'GetNodeInfo will return type dict')
 def getnodeinfo_returns_dict(step):
