@@ -11,15 +11,15 @@ from iota import Iota
 
 
 
-@step(r'The host is "([^"]*)"')
+@step(r'the host is "([^"]*)"')
 def the_host_is(step,host):
     world.host = host
 
-@step(r'The port is (\d+)')
+@step(r'the port is (\d+)')
 def the_port_is(step,port):
     world.port = port
         
-@step(r'GetNodeInfo will return type dict')
+@step(r'getNodeInfo will return type dict')
 def getnodeinfo_returns_dict(step):
     address = world.host + ":" + str(world.port)
     api = Iota(address)
