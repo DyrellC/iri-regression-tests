@@ -34,10 +34,7 @@ def the_port_is(step,port):
 def getnodeinfo_returns_dict(step):
     address = testAddresses['host'[0]] + ":" + str(testAddresses['port'[0]])
     api = Iota(address)
-    try:
-        info = api.get_node_info();
-    except:
-        info = "Error: getNodeInfo did not succeed"
+    info = api.get_node_info();
     
     assert type(info) is dict, "GetNodeInfo returned %r which means it did not succeed" % type(info)
     
@@ -113,7 +110,6 @@ def write_responses_to_files(step):
 def getNeighbors_returns_type_dict(step):
     address = testAddresses['host'[0]] + ":" + str(testAddresses['port'[0]])
     api = Iota(address)
-   
     info = api.get_neighbors();
     
     assert type(info) is dict, "GetNeighbors returned %r which means it did not succeed" % info
@@ -164,6 +160,7 @@ def make_neighbor_log_dirs(step,numtests):
     testVars['logFiles'] = testLogs 
     testVars['logFilesId'] = logFiles
 
+
 @step(r'each directory will have a file listing the neighbors')
 def log_neighbors(step):
     assert len(testVars['logFiles']) > 0, "logFiles array empty {}".format(testVars['logFiles'])
@@ -183,10 +180,6 @@ def log_neighbors(step):
         file.close_file(testVars['logFilesId'][i])
         
     dir.change_directory("../../")
-#        Then getNeighbors is called 3 times
-#        And 3 neighbor log directories will be created
-#        Then each directory will have a file listing the neighbors
-
 
 
 
