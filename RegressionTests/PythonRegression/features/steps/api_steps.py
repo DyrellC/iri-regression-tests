@@ -107,3 +107,87 @@ def write_responses_to_files(step):
     dir.change_directory("../../")
            
 
+
+#Scenario 3: getNeighbors api test 
+@step(r'getNeighbors will return type dict')
+def getNeighbors_returns_type_dict(step):
+    address = testAddresses['host'[0]] + ":" + str(testAddresses['port'[0]])
+    api = Iota(address)
+   
+    info = api.get_neighbors();
+    
+    assert type(info) is dict, "GetNeighbors returned %r which means it did not succeed" % info
+    
+    
+#Scenario 4: log neighbors
+@step(r'getNeighbors is called (\d+) times')
+def multiple_getNeighbors_called(step,numtests):
+    testVars['numTests'] = int(numtests)
+    
+    address = testVars['addresses'[0]]
+    api = Iota(address)      
+    responses = []    
+   
+    for i in range(testVars['numTests']):        
+        response = api.get_neighbors()     
+        responses.append(response)
+    
+    testVars['responses'] = responses
+         
+
+@step(r'(\d+) neighbor log directories will be created')
+def make_neighbor_log_dirs(step,numtests):
+    logDir = "./API_testing_logs"
+    exists = os.path.exists(logDir)
+    if(exists):
+        dir.change_directory(logDir)
+    else:
+        dir.make_and_enter(logDir)
+        
+    logDir = "./getNeighbors_logs"
+    dir.make_and_enter(logDir)
+    
+    testLogs = []
+    logFiles = []
+    
+    for i in range(int(numtests)):
+        testnum = i + 1
+        
+        logDir = "./Test%d/" % testnum
+        dir.make_directory(logDir)      
+        testLog =logDir + "Test%dGetNeighbors" % testnum
+        testLogs.append(testLog)
+
+        logFile = file.make_file(testLog)
+        logFiles.append(logFile)
+    
+    testVars['logFiles'] = testLogs 
+    testVars['logFilesId'] = logFiles
+
+@step(r'each directory will have a file listing the neighbors')
+def log_neighbors(step):
+    assert len(testVars['logFiles']) > 0, "logFiles array empty {}".format(testVars['logFiles'])
+    for i in range(len(testVars['logFiles'])):
+        assert os.path.exists(testVars['logFiles'][i])
+        for x in testVars['responses'][i]:
+            outputClass = type(testVars['responses'][i][x])
+            neighbors = ""
+            contentWrite = ""
+            if outputClass == list:
+                contentWrite += str(x) + " :\n"
+                for y in range(len(testVars['responses'][i][x])):
+                    contentWrite += "\t" + str(testVars['responses'][i][x][y]['address']) + "\n"   
+                
+            edit.write_to_file(testVars['logFilesId'][i], contentWrite)
+        
+        file.close_file(testVars['logFilesId'][i])
+        
+    dir.change_directory("../../")
+#        Then getNeighbors is called 3 times
+#        And 3 neighbor log directories will be created
+#        Then each directory will have a file listing the neighbors
+
+
+
+
+
