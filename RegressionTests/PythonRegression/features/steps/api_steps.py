@@ -7,13 +7,15 @@ Created on Jun 26, 2018
 from aloe import *
 from iota import Iota
 from util.logging import file_editing
-from util.fileHandling import directory_handling
+from util.fileHandling import directory_handling, file_handling
+
 import os 
 import time 
 import json
 
 dir = directory_handling.DirectoryHandling()
-file = file_editing.FileEditing()
+file = file_handling.FileHandling()
+edit = file_editing.FileEditing()
 
 testAddresses = {'host':[],'port':[]}
 testVars = {}
@@ -69,8 +71,7 @@ def call_getNodeInfo_multiple_times(step,numTests):
 @step(r'(\d+) test log directories will be created')
 def test_log_dirs_created(step,numTests):
     logDir = "./API_testing_logs"
-    dir.make_and_enter(logDir)
-    
+    dir.make_and_enter(logDir)  
     logDir = "./getNodeInfo_logs"
     dir.make_and_enter(logDir)
     
@@ -81,11 +82,10 @@ def test_log_dirs_created(step,numTests):
         testnum = i + 1
         
         logDir = "./Test%d/" % testnum
-        dir.make_directory(logDir)
-        
+        dir.make_directory(logDir)      
         testLog =logDir + "Test%dGetNodeLog" % testnum
         testLogs.append(testLog)
-        
+
         logFile = file.make_file(testLog)
         logFiles.append(logFile)
     
@@ -100,7 +100,7 @@ def write_responses_to_files(step):
         assert os.path.exists(testVars['logFiles'][i])
         for x in testVars['responses'][i]:
             contentWrite = str(x) + " : " + str(testVars['responses'][i][x])+"\n"
-            file.write_to_file(testVars['logFilesId'][i], contentWrite)
+            edit.write_to_file(testVars['logFilesId'][i], contentWrite)
         
         file.close_file(testVars['logFilesId'][i])
         

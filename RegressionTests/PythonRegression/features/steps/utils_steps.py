@@ -1,10 +1,11 @@
 from aloe import step, world
-from util.fileHandling import directory_handling
+from util.fileHandling import directory_handling,file_handling
 from util.logging import file_editing
 import os
 
 dir = directory_handling.DirectoryHandling()
-file = file_editing.FileEditing()
+file = file_handling.FileHandling()
+edit = file_editing.FileEditing()
 
 testVar = {'key':'value'}
 
@@ -63,7 +64,7 @@ def create_test_file(step,content):
     testFile = file.make_file('Test1')
     testVar['testFile'] = []
     testVar['testFile'[0]] = testFile
-    file.write_to_file(testVar['testFile'[0]], content)
+    edit.write_to_file(testVar['testFile'[0]], content)
     file.close_file(testVar['testFile'[0]])
  
          
@@ -72,7 +73,7 @@ def create_test_file(step,content):
 def check_file(step,output):
     testFile = file.open_file_read('Test1')
     testVar['testFile'[0]] = testFile
-    fileContents = file.read_from_file(testVar['testFile'[0]])
+    fileContents = edit.read_from_file(testVar['testFile'[0]])
     file.close_file(testVar['testFile'[0]])
     dir.change_directory("../../")
     assert fileContents == output, 'fileContents = {} \nOutput = {}'.format(fileContents,output) 
@@ -82,39 +83,49 @@ def check_file(step,output):
 
 @step(r'(\d+) test log directories exist')
 def log_directories_exist(step,num):
-    testVar['logDirs'] = []
+    logDirs = []
     testVar['numTests'] = int(num)
     for i in range(testVar['numTests']):
         logNum = i+1
-        testVar['logDirs'[i]] = './oneTestLog/test%dLogs' % logNum
+        logDirs.append('./multipleTestLogs/test%dLogs' % logNum) 
+    
+    testVar['logDirs'] = logDirs
     
     for i in range(len(testVar['logDirs'])):
-        exists = os.path.exists(testVar['logDirs'[i]])
-        assert exists == True
+        exists = os.path.exists(testVar['logDirs'][i])
+        assert exists == True, "Path doesn't exist {}".format(testVar['logDirs'][i])
     
 @step(r'create a log file in each directory')
 def create_log_directories(step):
-    testVar['logFiles'] = []
+    logFiles = []
     for i in range(len(testVar['logDirs'])):
-        logFile = testVar['logDirs'[i]] + "/TestLog"
-        testVar['logFiles'[i]] = logFile
-     
-    testVar['logFilesId'] = []    
+        logFile = testVar['logDirs'][i] + "/TestLog"
+        logFiles.append(logFile)
+    
+    testVar['logFiles'] = logFiles
+    logFilesId = []
+    assert len(testVar['logFiles']) > 0, "logFiles is empty {}".format(testVar['logFiles'])    
+    
     for i in range(len(testVar['logFiles'])):
-        logFileId = file.make_file(testVar['logFiles'[i]])
-        testVar['logFilesId'[i]] = logFileId
+        logFileId = file.make_file(testVar['logFiles'][i])
+        logFilesId.append(logFileId)
+        exists = os.path.exists(testVar['logFiles'][i])
+        assert exists is True, "Log file not created"
+
+    testVar['logFilesId'] = logFilesId 
+
         
 @step(r'write "([^"]*)" with test tag into each file')
 def write_to_log_files(step,content):
     for i in range(len(testVar['logFilesId'])):
-        file.write_to_file(testVar['logFilesId'[i]], content) 
-        file.close_file('logFilesId'[i])
+        edit.write_to_file(testVar['logFilesId'][i], content) 
+        file.close_file(testVar['logFilesId'][i])
         
 @step(r'check that each file has "([^"]*)" as its contents')
 def check_log_files(step,output):
     for i in range(len(testVar['logFiles'])):
-        logFile = file.open_file_read(testVar['logFiles'[i]])
-        lines = file.read_from_file(logFile)
+        logFile = file.open_file_read(testVar['logFiles'][i])
+        lines = edit.read_from_file(logFile)
         assert lines == output, "Lines = {}\nOutput = {}".format(lines,output) 
         
         
