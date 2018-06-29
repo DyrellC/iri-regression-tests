@@ -1,5 +1,6 @@
 from aloe import step, world
-from util.fileHandling import directory_handling, file_editing
+from util.fileHandling import directory_handling
+from util.logging import file_editing
 import os
 
 dir = directory_handling.DirectoryHandling()
