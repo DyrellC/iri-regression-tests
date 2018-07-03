@@ -1,8 +1,4 @@
-'''
-Created on Jun 26, 2018
 
-@author: d
-'''
 # -*- coding: utf-8 -*-
 from aloe import *
 from iota import Iota

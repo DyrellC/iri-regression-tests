@@ -1,9 +1,3 @@
-'''
-Created on Jun 28, 2018
-
-@author: d
-'''
-
 class FileHandling():
         
     def make_file(self,file_name):

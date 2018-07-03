@@ -1,8 +1,4 @@
-'''
-Created on Jun 27, 2018
 
-@author: d
-'''
 import os
 
 

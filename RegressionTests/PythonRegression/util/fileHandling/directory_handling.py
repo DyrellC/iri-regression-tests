@@ -1,8 +1,4 @@
-'''
-Created on Jun 26, 2018
 
-@author: d
-'''
 import os 
 import shutil
 
