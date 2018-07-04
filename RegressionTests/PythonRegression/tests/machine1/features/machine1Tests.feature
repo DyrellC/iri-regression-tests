@@ -29,3 +29,17 @@ Feature: Test API calls on Machine 1
 		|time								|
 		|tips								|
 		|transactionsToRequest				|
+		
+	
+	Scenario: GetNeighbors is called
+		Given getNeighbors is called on Node "nodeA"
+		Then a response with the following is returned:
+		|keys							|
+		|address						|
+		|numberOfAllTransactions		|
+		|numberOfAllTransactionRequests	|
+		|numberOfNewTransactions		|
+		|numberOfInvalidTransactions	|
+		|numberOfSentTransactions		|
+		|connectionType					|
+		
