@@ -1,5 +1,5 @@
 from aloe import step, world
-from util.fileHandling import directory_handling,file_handling
+from util.file_handling import directory_handling,file_handling
 from util.logging import file_editing
 import os
 
@@ -12,7 +12,7 @@ testVar = {'key':'value'}
 
 
 def test_started(step):
-    testVar.update({'testdir':"./oneTestLog"})
+    testVar.update({'testdir':"./single_test_log"})
     testVar.update({'logdir':"./test%dLogs" % 1})
     
 def file_directory_created(step):
@@ -27,7 +27,7 @@ def log_directory_created(step):
 ##Scenario 2 
    
 def tests_started(step,number):
-    testVar["testdir"] = "./multipleTestLogs"
+    testVar["testdir"] = "./multiple_test_logs"
     testVar["logdir"] = []
     max = int(number)
     testVar["numTests"] = max
@@ -48,7 +48,7 @@ def log_directories_created(step):
 ##Scenario 3  
     
 def test_log_exists(step):
-    testVar["dirLoc"] = './oneTestLog/test1Logs'
+    testVar["dirLoc"] = './single_test_log/test1Logs'
     exists = os.path.isdir(testVar['dirLoc'])
     assert exists is True
 
@@ -79,7 +79,7 @@ def log_directories_exist(step,num):
     testVar['numTests'] = int(num)
     for i in range(testVar['numTests']):
         logNum = i+1
-        logDirs.append('./multipleTestLogs/test%dLogs' % logNum) 
+        logDirs.append('./multiple_test_logs/test%dLogs' % logNum) 
     
     testVar['logDirs'] = logDirs
     

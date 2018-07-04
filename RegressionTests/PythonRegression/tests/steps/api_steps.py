@@ -3,7 +3,7 @@
 from aloe import *
 from iota import Iota
 from util.logging import file_editing
-from util.fileHandling import directory_handling, file_handling
+from util.file_handling import directory_handling, file_handling
 
 import os 
 import time 
