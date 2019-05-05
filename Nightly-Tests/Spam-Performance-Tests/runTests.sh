@@ -53,7 +53,7 @@ IRI_TARGET=$(pwd)
 
 cd ${base_dir}
 echo "Installing python requirements"
-virtualenv venv
+python3 -m venv ./venv/
 source ./venv/bin/activate
 cd ../
 pip install --upgrade pip
