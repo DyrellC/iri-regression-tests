@@ -12,10 +12,7 @@ function ctrl_c() {
 echo "Downloading apt requirments "
 sed 's/#.*//' requirements.txt | xargs sudo apt-get install -y
 
-UUID="$(uuidgen)"
-K8S_NAMESPACE=$(kubectl config get-contexts $(kubectl config current-context) | tail -n+2 | awk '{print $5}')
 base_dir=$(pwd)
-
 
 if [[ ! -d ./iri/ ]]; then
     echo "Downloading IRI"
@@ -73,6 +70,6 @@ NODE="NodeA"
 HOST="localhost"
 PORT="14265"
 
-bash ./startJmeter.sh ${NODE} ${HOST} ${PORT} ${UUID} ${K8S_NAMESPACE}
+bash ./startJmeter.sh ${NODE} ${HOST} ${PORT}
 
 deactivate

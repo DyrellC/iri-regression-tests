@@ -3,8 +3,6 @@
 NODE=$1
 HOST=$2
 PORT=$3
-UUID=$4
-NAMESPACE=$5
 
 DATE=$(date +'%m-%d-%Y')
 
