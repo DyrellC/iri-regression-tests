@@ -46,14 +46,14 @@ for FILE in ${CWD}/apiData/*.txt; do
     
     SINGLE_THREAD=$(pwd)
     cd ${CWD}    
-    nohup python ./runScan.py -o ./SingleThreadScanLogs/ -i 0.5 -n 360 -c ${FILENAME} &> SingleThreadScanLog.out &    
+    nohup python ./runScan.py -o ./SingleThreadScanLogs/ -i 0.25 -n 480 -c ${FILENAME} &> SingleThreadScanLog.out &    
     cd ${SINGLE_THREAD}
     
     nohup bash ${CWD}/apache-jmeter-5.1.1/bin/jmeter.sh -n -t ${CWD}/iriRequests.jmx -l ${LOG_FILE} \
     -j ${RUNLOG_FILE} -Jhost ${HOST} -Jport ${PORT} -Jfile ${FILE} -JnumThreads 1 \
     -JnumLoops 100 &> "${FILENAME}-jmeter-single-out.log" &
 
-    sleep 200
+    sleep 150
 
     echo "Starting MultiThread test for $FILENAME on $NODE"
 
@@ -63,14 +63,14 @@ for FILE in ${CWD}/apiData/*.txt; do
     
     MULTI_THREAD=$(pwd)
     cd ${CWD}
-    nohup python ./runScan.py -o ./MultiThreadScanLogs/ -i 0.5 -n 360 -c ${FILENAME} &> MultiThreadScanLog.out &    
+    nohup python ./runScan.py -o ./MultiThreadScanLogs/ -i 0.25 -n 480 -c ${FILENAME} &> MultiThreadScanLog.out &    
     cd ${MULTI_THREAD}
     
     nohup bash ${CWD}/apache-jmeter-5.1.1/bin/jmeter.sh -n -t ${CWD}/iriRequests.jmx -l ${LOG_FILE} \
     -j ${RUNLOG_FILE} -Jhost ${HOST} -Jport ${PORT} -Jfile ${FILE} -JnumThreads 100 \
     -JnumLoops 1 &> "${FILENAME}-jmeter-multi-out.log" &
 
-    sleep 200 
+    sleep 150 
 
     cd ${LOG_DIRECTORY}
 done 
