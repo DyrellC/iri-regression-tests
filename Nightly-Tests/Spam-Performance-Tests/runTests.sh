@@ -5,6 +5,7 @@ trap ctrl_c INT
 function ctrl_c() {
     echo
     echo "Exit called by user"
+    echo ${IRI}
     kill -9 ${IRI}
     exit
 }
@@ -20,9 +21,14 @@ if [[ ! -d ./iri/ ]]; then
 fi
 
 cd iri 
-git fetch
-git pull
-mvn clean compile | mvn package -DskipTests
+rm -rf target
+mkdir target
+cd target
+wget https://github.com/iotaledger/iri/releases/download/v1.5.5/iri-1.5.5.jar
+cd ../
+#git fetch
+#git pull
+#mvn clean compile | mvn package -DskipTests
 cd ../
 echo "IRI installed"
 
@@ -35,16 +41,21 @@ if [[ ! -d ./apache-jmeter-5.1.1/ ]]; then
     echo "jmeter.save.saveservice.response_data=true" >> ./apache-jmeter-5.1.1/bin/user.properties
 fi
 
-if [ -f ./db-* ]; then
-    rm db-*
+
+test -f ./db-*.tar
+EXISTS=$?
+echo $EXISTS
+
+if [ $EXISTS == 1 ]; then
+    echo "Downloading db"
+    #curl -LO https://dbfiles.iota.org/mainnet/1.5.6/db-1056701.tar    
+    curl -LO https://dbfiles.iota.org/mainnet/1.5.4/db-815381.tar
 fi
 
-echo "Downloading db"
-curl -LO https://s3.eu-central-1.amazonaws.com/iotaledger-dbfiles/dev/SyncTestSynced.tar.gz
 
 echo "Unpacking db"
-tar -xvf SyncTestSynced.tar.gz
-mv ./testnetdb ./iri/target/
+tar -xvf db-*
+mv ./mainnetdb ./iri/target/
 cd ./iri/target/
 IRI_TARGET=$(pwd)
 
@@ -59,17 +70,18 @@ cd ${base_dir}
 
 cd ${IRI_TARGET}
 echo "Starting IRI"
-nohup java -jar iri-1.* -p 14265 -u 14600 --testnet true --testnet-no-coo-validation true --testnet-coordinator EFPNKGPCBXXXLIBYFGIGYBYTFFPIOQVNNVVWTTIYZO9NFREQGVGDQQHUUQ9CLWAEMXVDFSSMOTGAHVIBH --mwm 1 --milestone-start 0 --remote-limit-api "" --remote true &> nodelog.out &
+ls 
+nohup java -jar iri-* -p 14265 -t 15600 --remote-limit-api "" --remote true &> nodelog.out &
 IRI=$!
 
 # Give node time to start up
-sleep 15
+sleep 120
 cd ${base_dir}
 
 NODE="NodeA"
 HOST="localhost"
 PORT="14265"
 
-bash ./startJmeter.sh ${NODE} ${HOST} ${PORT}
+bash ./startJmeter.sh ${NODE} ${HOST} ${PORT} ${IRI}
 
 deactivate

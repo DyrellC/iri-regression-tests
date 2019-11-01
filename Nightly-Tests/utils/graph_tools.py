@@ -17,7 +17,7 @@ def make_graph(num_tests, inputs, file, title, test):
 
     x_axis = []
     for x in range(num_tests):
-        x_axis.append(x+1)
+        x_axis.append(x+1)            
 
     plt.plot(x_axis, inputs['iri'], label='IRI')
 

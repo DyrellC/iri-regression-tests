@@ -34,7 +34,7 @@ def graph_results():
                file='DemoMem.png',
                title='Demo Mem Usage',
                test=test)
-
+   
     make_graph(num_tests=test.numNetTests,
                inputs={'iri': test.get_net_received_bytes()},
                file='DemoNetRecv.png',
@@ -63,19 +63,19 @@ def graph_results():
 
 def find_iri(proc_list):
     for process in proc_list:
-        proc = process.as_dict(attrs=['pid', 'cmdline', 'cpu_percent', 'memory_percent', 'memory_full_info', 'ppid'])
+        proc = process.as_dict(attrs=['pid', 'cmdline', 'cpu_percent', 'memory_percent', 'memory_full_info', 'ppid', 'name'])
+        if proc['name'] == 'java':
+            for index in proc['cmdline']:
+                if 'iri-' in index:
+                    p = psutil.Process(pid=proc['pid'])
+                    run_scans(p)
 
-        for index in proc['cmdline']:
-            if 'iri-' in index:
-                p = psutil.Process(pid=proc['pid'])
+                    sleep_time = test.numTests/(1/test.interval) + 10
+                    print("These scans will take {} seconds to complete...".format(sleep_time))
+                    sleep(sleep_time)
 
-                run_scans(p)
+                    graph_results()
 
-                sleep_time = test.numTests/(1/test.interval) + 10
-                print("These scans will take {} seconds to complete...".format(sleep_time))
-                sleep(sleep_time)
-
-                graph_results()
     return None
 
 
@@ -86,8 +86,8 @@ base_output_dir = "./Output/"
 test = Test()
 test.numTests = 120
 test.interval = 0.5
-test.numNetTests = 0
-test.numIoTests = 0
+test.numNetTests = 120
+test.numIoTests = 120
 
 args = sys.argv
 
@@ -109,6 +109,7 @@ for arg in args:
 test.set_base_directory(base_output_dir)
 test.set_date_log_directory(base_output_dir + datetime.datetime.now().date().__str__() + "/")
 test.set_log_directory(base_output_dir + datetime.datetime.now().date().__str__() + "/" + test.apiCall + "/")
+
 logging.make_log_directory(test)
 raw_logger = logging.get_raw_logger(test)
 scan_logger = logging.get_scan_logger(test)
